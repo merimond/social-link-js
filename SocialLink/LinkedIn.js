@@ -1,82 +1,81 @@
 import URL from './URL';
 
-const NAME = "LinkedIn";
+const NAME = 'LinkedIn';
 
-const parse_query_based_formats = (query) => {
+const parseQueryBasedFormats = query => {
   if (/^id=(\d+)/.test(query)) {
     const id = query.match(/^id=(\d+)/)[1];
-    return { id, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
 
   if (/^id=(A[^&]+)/.test(query)) {
     const id = query.match(/^id=(A[^&]+)/)[1];
-    return { id, format: "person-alphanumeric" };
+    return { id, format: 'person-alphanumeric' };
   }
 
   return null;
 };
 
-const parse_valid = (url, parts = null) => {
-  parts = parts || URL.parse(url);
+const parseValid = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
 
   if (!/linkedin\.com$/.test(parts.host)) {
     return null;
-  };
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/^\/company-beta\/(\d+)($|\/)/.test(path)) {
     const id = path.match(/^\/company-beta\/(\d+)($|\/)/)[1];
-    return { id, format: "company-numeric" };
+    return { id, format: 'company-numeric' };
   }
 
   if (/^\/company\/(\d+)($|\/)/.test(path)) {
     const id = path.match(/^\/company\/(\d+)($|\/)/)[1];
-    return { id, format: "company-numeric" };
+    return { id, format: 'company-numeric' };
   }
 
   if (/^\/company\/([^\/]+)\/?/.test(path)) {
     const id = path.match(/^\/company\/([^\/]+)\/?/)[1];
-    return { id, format: "company-slug" };
+    return { id, format: 'company-slug' };
   }
 
   if (/^\/in\/([^\/]+)\/?/.test(path)) {
     const id = path.match(/^\/in\/([^\/]+)\/?/)[1];
-    return { id, format: "person-slug" };
+    return { id, format: 'person-slug' };
   }
 
   if (/^\/pub\/([^\/]+\/\w{1,3}\/\w{1,3}\/\w{1,3})\/?/.test(path)) {
     const id = path.match(/^\/pub\/([^\/]+\/\w{1,3}\/\w{1,3}\/\w{1,3})\/?/)[1];
-    return { id, format: "person-old" };
+    return { id, format: 'person-old' };
   }
 
   if (/^\/sales\/profile\/(\d+)($|,)/.test(path)) {
     const id = path.match(/^\/sales\/profile\/(\d+)($|,)/)[1];
-    return { id: $1, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
 
   if (/^\/profile\/view/.test(path)) {
-    return parse_query_based_formats(parts.query);
+    return parseQueryBasedFormats(parts.query);
   }
 
   return null;
-}
+};
 
-const guess_invalid = (url) => {
+const guessInvalid = url => {
   /* //TODO check this fn */
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format) => {
   switch (format) {
@@ -95,7 +94,6 @@ const construct = (id, format) => {
     default:
       return null;
   }
-}
+};
 
-export default { NAME, parse, construct }
-
+export default { NAME, parse, construct };

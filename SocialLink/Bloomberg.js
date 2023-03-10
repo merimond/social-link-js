@@ -1,84 +1,90 @@
 import URL from './URL';
 
-const NAME = "Bloomberg"
+const NAME = 'Bloomberg';
 
-const parse_valid = (url, parts = null) => {
-  parts = parts || URL.parse(url)
+const parseValid = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
   if (!/bloomberg\.com$/.test(parts.host)) {
-    return null
-  };
+    return null;
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}:[a-z]{2})$/i.test(path)) {
     const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}:[a-z]{2})$/i)[1];
-    return { id, format: "company-ticker" };
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}:[a-z]{2})-/i.test(path)) {
     const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}:[a-z]{2})-/i)[1];
-    return { id, format: "company-ticker" };
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})$/i.test(path)) {
-    const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})$/i)[1];
-    return { id, format: "company-ticker" };
+    const id = path.match(
+      /^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})$/i
+    )[1];
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})-/i.test(path)) {
-    const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})-/i)[1];
-    return { id, format: "company-ticker" };
+    const id = path.match(
+      /^\/profile\/company\/([a-z0-9]{2,8}\/[a-z]:[a-z]{2})-/i
+    )[1];
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})$/i.test(path)) {
-    const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})$/i)[1];
-    return { id, format: "company-ticker" };
+    const id = path.match(
+      /^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})$/i
+    )[1];
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})-/i.test(path)) {
-    const id = path.match(/^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})-/i)[1];
-    return { id, format: "company-ticker" };
+    const id = path.match(
+      /^\/profile\/company\/([a-z0-9]{2,8}-[a-z]:[a-z]{2})-/i
+    )[1];
+    return { id, format: 'company-ticker' };
   }
 
   if (/^\/profiles\/people\/([\d]+)$/i.test(path)) {
     const id = path.match(/^\/profiles\/people\/([\d]+)$/i)[1];
-    return { id, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
 
   if (/^\/profiles\/people\/([\d]+)-/i.test(path)) {
     const id = path.match(/^\/profiles\/people\/([\d]+)-/i)[1];
-    return { id, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
-
 
   if (/^\/profile\/person\/([\d]+)$/i.test(path)) {
     const id = path.match(/^\/profile\/person\/([\d]+)$/i)[1];
-    return { id, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
 
   if (/^\/profile\/person\/([\d]+)-/i.test(path)) {
     const id = path.match(/^\/profile\/person\/([\d]+)-/i)[1];
-    return { id, format: "person-numeric" };
+    return { id, format: 'person-numeric' };
   }
 
-  return null
-}
+  return null;
+};
 
-const guess_invalid = (url) => {
+const guessInvalid = url => {
   /* //TODO check this fn */
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format) => {
   switch (format) {
@@ -89,7 +95,6 @@ const construct = (id, format) => {
     default:
       return null;
   }
-}
+};
 
-export default { NAME, parse, construct }
-
+export default { NAME, parse, construct };

@@ -1,55 +1,52 @@
 import URL from './URL';
 
-const NAME = "AngelList"
+const NAME = 'AngelList';
 
-const parse_valid = (url, parts = null) => {
-  parts = parts || URL.parse(url)
+const parseValid = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
   if (!/angel\.co$/.test(parts.host)) {
-    return null
-  };
-
-  console.log(parts.path, "parts")
+    return null;
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/^\/company\/([a-z0-9\._-]+)$/.test(path)) {
     const id = path.match(/^\/company\/([a-z0-9\._-]+)$/)[1];
-    return { id, format: "company" };
+    return { id, format: 'company' };
   }
 
   if (/^\/([a-z0-9\._-]+)$/.test(path)) {
     const id = path.match(/^\/([a-z0-9\._-]+)$/)[1];
-    return { id, format: "person" };
+    return { id, format: 'person' };
   }
 
   if (/^\/p\/([a-z0-9\._-]+)$/.test(path)) {
     const id = path.match(/^\/p\/([a-z0-9\._-]+)$/)[1];
-    return { id: $1, format: "person" };
+    return { id, format: 'person' };
   }
 
   if (/^\/u\/([a-z0-9\._-]+)$/.test(path)) {
     const id = path.match(/^\/company\/([a-z0-9\._-]+)$/)[1];
-    return { id, format: "person" };
+    return { id, format: 'person' };
   }
 
-  return null
-}
+  return null;
+};
 
-const guess_invalid = (url) => {
+const guessInvalid = url => {
   /* //TODO check this fn */
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format) => {
   switch (format) {
@@ -60,6 +57,6 @@ const construct = (id, format) => {
     default:
       return null;
   }
-}
+};
 
-export default { NAME, parse, construct }
+export default { NAME, parse, construct };

@@ -1,44 +1,43 @@
 import URL from './URL';
 
-const NAME = "Sociopath";
+const NAME = 'Sociopath';
 
-const parse_valid = (url, parts = null) => {
-  parts = parts || URL.parse(url);
+const parseValid = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
 
   if (!/sociopath\.io$/.test(parts.host)) {
     return null;
-  };
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/^\/companies\/(\w{8}-\w{4}-\w{4}-\w{4}-\w{12})$/.test(path)) {
     const id = path.match(/^\/companies\/(\w{8}-\w{4}-\w{4}-\w{4}-\w{12})$/)[1];
-    return { id, format: "company" };
+    return { id, format: 'company' };
   }
 
   if (/^\/people\/(\w{8}-\w{4}-\w{4}-\w{4}-\w{12})$/.test(path)) {
     const id = path.match(/^\/people\/(\w{8}-\w{4}-\w{4}-\w{4}-\w{12})$/)[1];
-    return { id, format: "person" };
+    return { id, format: 'person' };
   }
 
   return null;
-}
+};
 
-const guess_invalid = (url) => {
+const guessInvalid = url => {
   /* //TODO check this fn */
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format) => {
   switch (format) {
@@ -49,7 +48,6 @@ const construct = (id, format) => {
     default:
       return null;
   }
-}
+};
 
-export default { NAME, parse, construct }
-
+export default { NAME, parse, construct };

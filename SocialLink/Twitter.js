@@ -1,60 +1,57 @@
 import URL from './URL';
 
-const NAME = "Twitter";
+const NAME = 'Twitter';
 
-const parse_valid = (url, parts = null) => {
+const parseValid = (url, initParts = null) => {
   /* https://help.twitter.com/en/managing-your-account/twitter-username-rules */
-  parts = parts || URL.parse(url);
+  const parts = initParts || URL.parse(url);
 
   if (!/twitter\.com$/.test(parts.host)) {
     return null;
-  };
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/^\/([a-z0-9_]+)\/?$/.test(path)) {
     const id = path.match(/^\/([a-z0-9_]+)\/?$/)[1];
-    return { id, format: "default" };
+    return { id, format: 'default' };
   }
 
   return null;
-}
+};
 
-const guess_invalid = (url) => {
-
-  if (typeof url !== 'string') {
+const guessInvalid = initUrl => {
+  if (typeof initUrl !== 'string') {
     return null;
   }
 
-  url.trim().toLowerCase();
+  const url = initUrl.trim().toLowerCase();
 
-  if (/@([a-z0-9_]+)/.test(path)) {
-    const id = path.match(/@([a-z0-9_]+)/)[1];
-    return { id, format: "default" };
+  if (/@([a-z0-9_]+)/.test(url)) {
+    const id = url.match(/@([a-z0-9_]+)/)[1];
+    return { id, format: 'default' };
   }
 
-  if (/twitter\.com\/(https?:\/\/twitter\.com\/.+)$/.test(path)) {
-    const id = path.match(/twitter\.com\/(https?:\/\/twitter\.com\/.+)$/)[1];
-    return parse_valid(id);
+  if (/twitter\.com\/(https?:\/\/twitter\.com\/.+)$/.test(url)) {
+    const id = url.match(/twitter\.com\/(https?:\/\/twitter\.com\/.+)$/)[1];
+    return parseValid(id);
   }
 
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format = null) => {
-  return `https://twitter.com/${id}`
-}
+  return `https://twitter.com/${id}`;
+};
 
-export default { NAME, parse, construct }
-
+export default { NAME, parse, construct };

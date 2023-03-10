@@ -1,72 +1,71 @@
 import URL from './URL';
 
-const NAME = "Facebook";
+const NAME = 'Facebook';
 
-const parse_query_based_formats = (query) => {
+const parseQueryBasedFormats = query => {
   if (/^id=(\d+)/.test(query)) {
     const id = query.match(/^id=(\d+)/)[1];
-    return { id, format: "numeric" };
+    return { id, format: 'numeric' };
   }
 
   return null;
-}
+};
 
-const parse_valid = (url, parts = null) => {
+const parseValid = (url, initParts = null) => {
   /* https://www.facebook.com/help/105399436216001 */
-  parts = parts || URL.parse(url)
+  const parts = initParts || URL.parse(url);
 
   if (!/facebook\.com$/.test(parts.host)) {
-    return null
-  };
+    return null;
+  }
 
   const path = parts.path.trim().toLowerCase();
 
   if (/profile\.php$/.test(path)) {
-    return parse_query_based_formats(parts.query);
+    return parseQueryBasedFormats(parts.query);
   }
 
   if (/\.php$/.test(path)) {
-    return null
+    return null;
   }
 
   if (/-(\d{8,})/.test(path)) {
     const id = path.match(/-(\d{8,})/)[1];
-    return { id, format: "numeric" };
+    return { id, format: 'numeric' };
   }
 
   if (/\/(\d{8,})/.test(path)) {
     const id = path.match(/\/(\d{8,})/)[1];
-    return { id, format: "numeric" };
+    return { id, format: 'numeric' };
   }
 
   if (/^\/pg\/([a-z0-9\._-]+)\/?/.test(path)) {
     const id = path.match(/^\/pg\/([a-z0-9\._-]+)\/?/)[1];
-    return { id, format: "slug" };
+    return { id, format: 'slug' };
   }
 
   if (/^\/([a-z0-9\._-]+)\/?$/.test(path)) {
     const id = path.match(/^\/([a-z0-9\._-]+)\/?$/)[1];
-    return { id, format: "slug" };
+    return { id, format: 'slug' };
   }
 
-  return null
-}
+  return null;
+};
 
-const guess_invalid = (url) => {
+const guessInvalid = url => {
   /* //TODO check this fn */
   return null;
-}
+};
 
-const parse = (url, parts = null) => {
-  parts = parts || URL.parse(url)
-  let result = parse_valid(url, parts) || guess_invalid(url);
+const parse = (url, initParts = null) => {
+  const parts = initParts || URL.parse(url);
+  const result = parseValid(url, parts) || guessInvalid(url);
 
   if (result === null) {
-    return null
-  } else {
-    return result = { ...result, type: NAME };
+    return null;
   }
-}
+  return { ...result, type: NAME };
+};
 
 const construct = (id, format) => {
   switch (format) {
@@ -77,7 +76,6 @@ const construct = (id, format) => {
     default:
       return null;
   }
-}
+};
 
-export default { NAME, parse, construct }
-
+export default { NAME, parse, construct };

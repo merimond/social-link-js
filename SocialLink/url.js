@@ -1,24 +1,25 @@
-
-const result = { host: undefined, path: undefined, query: undefined, fragment: undefined };
-const parse = uri => {
-
-  if (uri === null || uri === undefined)
+const result = {
+  host: undefined,
+  path: undefined,
+  query: undefined,
+  fragment: undefined,
+};
+const parse = initUrl => {
+  if (initUrl === null || initUrl === undefined) {
     return result;
+  }
 
-  uri = String(uri).trim();
+  let url = String(initUrl).trim();
 
-  if (typeof uri !== 'string')
+  if (typeof url !== 'string') {
     return result;
+  }
 
-  if (!/^http/i.test(uri))
-    uri = `http://${uri}`
+  if (!/^http/i.test(url)) {
+    url = `http://${url}`;
+  }
 
-  const {
-    host,
-    search,
-    pathname,
-    hash,
-  } = new URL(uri);
+  const { host, search, pathname, hash } = new URL(url);
 
   result.host = host;
   result.query = search;
@@ -26,6 +27,6 @@ const parse = uri => {
   result.fragment = hash;
 
   return result;
-}
+};
 
-export default { parse }
+export default { parse };
