@@ -71,7 +71,7 @@ const construct = (id, format) => {
   switch (format) {
     case 'slug':
       return `https://facebook.com/${id}`;
-    case 'numeric"':
+    case 'numeric':
       return `https://facebook.com/${id}`;
     default:
       return null;
